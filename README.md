@@ -20,3 +20,24 @@ Readonly Contract call runtime error: pox-2::stack-increase(u1000) ->
    Unchecked(CostComputationFailed("Error evaluating result of cost function ST000000000000000000002AMW42H.costs.cost_stx_account: 
     Unchecked(UndefinedFunction(\"cost_stx_account\"))"))
 ```
+
+## Functions
+
+```clarity
+(define-public (set-burnchain-parameters (first-burn-height uint)
+(define-public (disallow-contract-caller (caller principal))
+(define-public (allow-contract-caller (caller principal) (until-burn-ht (optional uint)))
+(define-public (stack-stx (amount-ustx uint)
+(define-public (revoke-delegate-stx)
+(define-public (delegate-stx (amount-ustx uint)
+(define-public (stack-aggregation-commit (pox-addr { version: (buff 1), hashbytes: (buff 32) })
+(define-public (stack-aggregation-commit-indexed (pox-addr { version: (buff 1), hashbytes: (buff 32) })
+(define-public (stack-aggregation-increase (pox-addr { version: (buff 1), hashbytes: (buff 32) })
+(define-public (delegate-stack-stx (stacker principal)
+(define-public (reject-pox)
+(define-public (stack-increase (increase-by uint))
+(define-public (stack-extend (extend-count uint)
+(define-public (delegate-stack-increase
+(define-public (delegate-stack-extend
+```
+
