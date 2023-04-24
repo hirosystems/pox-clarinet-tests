@@ -1,36 +1,17 @@
-name: Clarinet CI
-
+name: CI
 on: [push]
-
-env:
-  CI: 1
-
 jobs:
-  pre_run:
-    name: Cancel previous runs
+  tests:
+    name: "Test contracts with Clarinet"
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@ad6cb1b847ffb509a69b745b6ee2f1d14dfe14b8
+      - uses: actions/checkout@v2
+      - name: "Execute unit tests"
+        uses: docker://hirosystems/clarinet:latest
         with:
-          access_token: ${{ github.token }}
-          persist-credentials: false
-  run:
-    name: Run Clarinet tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      matrix:
-        node-version: [18.x]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
+          args: test --coverage --manifest-path=./Clarinet.toml
+      - name: "Export code coverage"
+        uses: codecov/codecov-action@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
-      - name: Check code format
-        run: yarn fmt:check
-      - name: Run test suite
-        run: yarn test
+          files: ./coverage.lcov
+          verbose: true
