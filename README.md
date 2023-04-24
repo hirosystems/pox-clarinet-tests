@@ -23,11 +23,13 @@ Readonly Contract call runtime error: pox-2::stack-increase(u1000) ->
 
 ## Functions
 
+B: Basic tests
+
 ```clarity
 (define-public (set-burnchain-parameters (first-burn-height uint)
 (define-public (disallow-contract-caller (caller principal))
 (define-public (allow-contract-caller (caller principal) (until-burn-ht (optional uint)))
-(define-public (stack-stx (amount-ustx uint)
+B (define-public (stack-stx (amount-ustx uint)
 (define-public (revoke-delegate-stx)
 (define-public (delegate-stx (amount-ustx uint)
 (define-public (stack-aggregation-commit (pox-addr { version: (buff 1), hashbytes: (buff 32) })
