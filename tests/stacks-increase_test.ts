@@ -1,6 +1,4 @@
-import {
-  assertEquals
-} from "https://deno.land/std@0.90.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.90.0/testing/asserts.ts";
 import {
   Account,
   Chain,
@@ -74,28 +72,51 @@ Clarinet.test({
   name: "stack-increase: attempt to increase with insufficient funds",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get('deployer')!;
-    const builtin = new BuiltIn(chain, accounts.get('deployer')!);
-    let sender = accounts.get('wallet_1')!;
+    const deployer = accounts.get("deployer")!;
+    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    let sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
     const increaseBy = 60000; // Exceeds available funds
 
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-stx', [types.uint(initialAmount), 
-        types.tuple({ version: types.buff(Uint8Array.from([5])), hashbytes: types.buff(Uint8Array.from([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])) })
-      , types.uint(10), types.uint(10)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-stx",
+        [
+          types.uint(initialAmount),
+          types.tuple({
+            version: types.buff(Uint8Array.from([5])),
+            hashbytes: types.buff(
+              Uint8Array.from([
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1,
+              ])
+            ),
+          }),
+          types.uint(10),
+          types.uint(10),
+        ],
+        sender.address
+      ),
     ]);
     block.receipts[0].result.expectOk();
 
     // Attempt to call `stack-increase` with an amount greater than the unlocked STX
     block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy)],
+        sender.address
+      ),
     ]);
 
     // Check that the call to `stack-increase` failed
     let ERR_STACK_INCREASE_NOT_LOCKED = 27;
-    block.receipts[0].result.expectErr().expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
+    block.receipts[0].result
+      .expectErr()
+      .expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -103,19 +124,26 @@ Clarinet.test({
   name: "stack-increase: attempt to increase without initial lock",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get('deployer')!;
-    const builtin = new BuiltIn(chain, accounts.get('deployer')!);
-    let sender = accounts.get('wallet_1')!;
+    const deployer = accounts.get("deployer")!;
+    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    let sender = accounts.get("wallet_1")!;
     const increaseBy = 1000;
 
     // Attempt to call `stack-increase` without having any STX locked initially
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy)],
+        sender.address
+      ),
     ]);
 
     // Check that the call to `stack-increase` failed
     let ERR_STACK_INCREASE_NOT_LOCKED = 27;
-    block.receipts[0].result.expectErr().expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
+    block.receipts[0].result
+      .expectErr()
+      .expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -123,28 +151,51 @@ Clarinet.test({
   name: "stack-increase: attempt to increase with an invalid amount",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get('deployer')!;
-    const builtin = new BuiltIn(chain, accounts.get('deployer')!);
-    let sender = accounts.get('wallet_1')!;
+    const deployer = accounts.get("deployer")!;
+    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    let sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
     const increaseBy = 0; // Invalid increase amount
 
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-stx', [types.uint(initialAmount), 
-        types.tuple({ version: types.buff(Uint8Array.from([5])), hashbytes: types.buff(Uint8Array.from([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])) })
-      , types.uint(10), types.uint(10)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-stx",
+        [
+          types.uint(initialAmount),
+          types.tuple({
+            version: types.buff(Uint8Array.from([5])),
+            hashbytes: types.buff(
+              Uint8Array.from([
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1,
+              ])
+            ),
+          }),
+          types.uint(10),
+          types.uint(10),
+        ],
+        sender.address
+      ),
     ]);
     block.receipts[0].result.expectOk();
 
     // Attempt to call `stack-increase` with an invalid amount
     block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy)],
+        sender.address
+      ),
     ]);
 
     // Check that the call to `stack-increase` failed
     let ERR_STACK_INCREASE_NOT_LOCKED = 27;
-    block.receipts[0].result.expectErr().expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
+    block.receipts[0].result
+      .expectErr()
+      .expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -152,45 +203,68 @@ Clarinet.test({
   name: "stack-increase: attempt to increase with denied permission",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get('deployer')!;
-    const builtin = new BuiltIn(chain, accounts.get('deployer')!);
-    let sender = accounts.get('wallet_1')!;
-    let sender2 = accounts.get('wallet_2')!;
+    const deployer = accounts.get("deployer")!;
+    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    let sender = accounts.get("wallet_1")!;
+    let sender2 = accounts.get("wallet_2")!;
     const initialAmount = 50000;
     const increaseBy = 1000;
 
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-stx', [types.uint(initialAmount), 
-        types.tuple({ version: types.buff(Uint8Array.from([5])), hashbytes: types.buff(Uint8Array.from([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])) })
-      , types.uint(10), types.uint(10)], sender.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-stx",
+        [
+          types.uint(initialAmount),
+          types.tuple({
+            version: types.buff(Uint8Array.from([5])),
+            hashbytes: types.buff(
+              Uint8Array.from([
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1,
+              ])
+            ),
+          }),
+          types.uint(10),
+          types.uint(10),
+        ],
+        sender.address
+      ),
     ]);
     block.receipts[0].result.expectOk();
 
     // Attempt to call `stack-increase` with a different tx-sender
     block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy)], sender2.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy)],
+        sender2.address
+      ),
     ]);
 
     // Check that the call to `stack-increase` failed
     let ERR_STACK_INCREASE_NOT_LOCKED = 27;
-    block.receipts[0].result.expectErr().expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
+    block.receipts[0].result
+      .expectErr()
+      .expectInt(ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
 // This test case simulates a scenario where three users call the `stack-increase` function combined with `delegate-stx`.
-// The test checks the amounts distributed to each user after a reward cycle is completed. The `calculateExpectedReward` 
+// The test checks the amounts distributed to each user after a reward cycle is completed. The `calculateExpectedReward`
 // function calculates the expected reward for each user based on their locked STX and the total locked STX in the cycle.
 Clarinet.test({
   name: "stack-increase: combined with delegate-stx and verifying distribution",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get('deployer')!;
-    const builtin = new BuiltIn(chain, accounts.get('deployer')!);
-    let delegator = accounts.get('wallet_1')!;
-    let sender1 = accounts.get('wallet_2')!;
-    let sender2 = accounts.get('wallet_3')!;
-    let sender3 = accounts.get('wallet_4')!;
+    const deployer = accounts.get("deployer")!;
+    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    let delegator = accounts.get("wallet_1")!;
+    let sender1 = accounts.get("wallet_2")!;
+    let sender2 = accounts.get("wallet_3")!;
+    let sender3 = accounts.get("wallet_4")!;
     const initialAmount1 = 50000;
     const initialAmount2 = 40000;
     const initialAmount3 = 30000;
@@ -218,9 +292,24 @@ Clarinet.test({
   */
     // sender1, sender2, and sender3 call `stack-increase` to increase their locked STX
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy1)], sender1.address),
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy2)], sender2.address),
-      Tx.contractCall('pox-2', 'stack-increase', [types.uint(increaseBy3)], sender3.address)
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy1)],
+        sender1.address
+      ),
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy2)],
+        sender2.address
+      ),
+      Tx.contractCall(
+        "pox-2",
+        "stack-increase",
+        [types.uint(increaseBy3)],
+        sender3.address
+      ),
     ]);
     block.receipts[0].result.expectErr();
     block.receipts[1].result.expectErr();
@@ -237,15 +326,39 @@ Clarinet.test({
 
     let result2 = builtin.getSTXAccount(sender2.address);
     result2.result.expectTuple().locked.expectUint(0); //initialAmount2 + increaseBy2);
-    
+
     let result3 = builtin.getSTXAccount(sender3.address);
     result2.result.expectTuple().locked.expectUint(0); //initialAmount3 + increaseBy3);
-    
+
     // Verify the rewards distributed to sender1, sender2, and sender3
-    const rewardAmount1 = calculateExpectedReward(initialAmount1 + increaseBy1, initialAmount1 + initialAmount2 + initialAmount3 + increaseBy1 + increaseBy2 + increaseBy3);
-    const rewardAmount2 = calculateExpectedReward(initialAmount2 + increaseBy2, initialAmount1 + initialAmount2 + initialAmount3 + increaseBy1 + increaseBy2 + increaseBy3);
-    const rewardAmount3 = calculateExpectedReward(initialAmount3 + increaseBy3, initialAmount1 + initialAmount2 + initialAmount3 + increaseBy1 + increaseBy2 + increaseBy3);
-    
+    const rewardAmount1 = calculateExpectedReward(
+      initialAmount1 + increaseBy1,
+      initialAmount1 +
+        initialAmount2 +
+        initialAmount3 +
+        increaseBy1 +
+        increaseBy2 +
+        increaseBy3
+    );
+    const rewardAmount2 = calculateExpectedReward(
+      initialAmount2 + increaseBy2,
+      initialAmount1 +
+        initialAmount2 +
+        initialAmount3 +
+        increaseBy1 +
+        increaseBy2 +
+        increaseBy3
+    );
+    const rewardAmount3 = calculateExpectedReward(
+      initialAmount3 + increaseBy3,
+      initialAmount1 +
+        initialAmount2 +
+        initialAmount3 +
+        increaseBy1 +
+        increaseBy2 +
+        increaseBy3
+    );
+
     result1.result.expectTuple().unlocked.expectUint(1000000); //initialAmount1 + increaseBy1 + rewardAmount1);
     result2.result.expectTuple().unlocked.expectUint(1000000); //initialAmount2 + increaseBy2 + rewardAmount2);
     result3.result.expectTuple().unlocked.expectUint(1000000); //initialAmount3 + increaseBy3 + rewardAmount3);
@@ -253,8 +366,10 @@ Clarinet.test({
 });
 
 // Helper function to calculate the expected reward based on the user's locked STX and the total locked STX in the cycle
-function calculateExpectedReward(userLockedSTX: number, totalLockedSTX: number): number {
+function calculateExpectedReward(
+  userLockedSTX: number,
+  totalLockedSTX: number
+): number {
   const totalReward = 100000; // Replace with the actual total reward for the cycle
   return Math.floor((userLockedSTX / totalLockedSTX) * totalReward);
 }
-
