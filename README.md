@@ -9,7 +9,7 @@ clarinet test --watch
 ## Notes
 
 - `pox-mainnet.clar` constants are hardcoded in to `pox-2.clar`.
-- A check in `stack-stx` was comment out to avoid some checks.
+- A check in `stack-stx` was comment out to avoid some complex checks for hashbytes.
 ```
 ;;DEBUG (try! (can-stack-stx pox-addr amount-ustx first-reward-cycle lock-period))
 ```
