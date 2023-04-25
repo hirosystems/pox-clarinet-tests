@@ -1,5 +1,7 @@
 # Clarinet Testing for PoX 
 
+## *DISCLAIMER*: because in this repo we are testing a standalone version of PoX some functionality might be missing or limit. For example the locked/unlocked balance of STX is not updated by the standalone PoX contract because this balances are updated by the blockchain node and stored outside of the smart contrac.t
+
 ## Run
 
 ```
