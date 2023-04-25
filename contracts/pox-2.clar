@@ -268,6 +268,12 @@
         none
     ))
 
+;; BEGIN CLARINET 
+(define-read-only (call-check-caller-allowed)
+    (check-caller-allowed)
+)
+;; END CLARINET
+
 (define-read-only (check-caller-allowed)
     (or (is-eq tx-sender contract-caller)
         (let ((caller-allowed

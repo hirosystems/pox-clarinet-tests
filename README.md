@@ -9,7 +9,7 @@ clarinet test --watch
 ## Notes
 
 - `pox-mainnet.clar` constants are hardcoded in to `pox-2.clar`.
-- A check in `stack-stx` was comment out to avoid some checks.
+- A check in `stack-stx` was comment out to avoid some complex checks for hashbytes.
 ```
 ;;DEBUG (try! (can-stack-stx pox-addr amount-ustx first-reward-cycle lock-period))
 ```
@@ -30,8 +30,8 @@ B (define-public (set-burnchain-parameters (first-burn-height uint)
 (define-public (disallow-contract-caller (caller principal))
 (define-public (allow-contract-caller (caller principal) (until-burn-ht (optional uint)))
 B (define-public (stack-stx (amount-ustx uint)
-(define-public (revoke-delegate-stx)
-(define-public (delegate-stx (amount-ustx uint)
+B (define-public (revoke-delegate-stx)
+B (define-public (delegate-stx (amount-ustx uint)
 (define-public (stack-aggregation-commit (pox-addr { version: (buff 1), hashbytes: (buff 32) })
 (define-public (stack-aggregation-commit-indexed (pox-addr { version: (buff 1), hashbytes: (buff 32) })
 (define-public (stack-aggregation-increase (pox-addr { version: (buff 1), hashbytes: (buff 32) })
