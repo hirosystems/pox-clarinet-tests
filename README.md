@@ -21,6 +21,8 @@ clarinet test --watch
 
 ## Functions
 
+### Coverage
+
 B: Basic tests
 
 ```clarity
@@ -40,4 +42,8 @@ B (define-public (stack-increase (increase-by uint))
 (define-public (delegate-stack-increase
 (define-public (delegate-stack-extend
 ```
+
+### Costs
+
+<img width="1427" alt="image" src="https://user-images.githubusercontent.com/30682875/234330158-6064eaf6-6120-422d-b11a-586677c68e76.png">
 
