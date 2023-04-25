@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "test": "clarinet test",
+    "fmt:check": "./node_modules/.bin/prettier --check .",
+    "fmt": "./node_modules/.bin/prettier --write ."
+  },
+  "dependencies": {
+    "clarinet": "^0.12.5"
+  },
+  "devDependencies": {
+    "prettier": "2.8.1"
+  }
+}
