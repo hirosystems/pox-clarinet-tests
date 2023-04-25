@@ -37,7 +37,7 @@ B (define-public (delegate-stx (amount-ustx uint)
 (define-public (stack-aggregation-increase (pox-addr { version: (buff 1), hashbytes: (buff 32) })
 (define-public (delegate-stack-stx (stacker principal)
 (define-public (reject-pox)
-(define-public (stack-increase (increase-by uint))
+B (define-public (stack-increase (increase-by uint))
 (define-public (stack-extend (extend-count uint)
 (define-public (delegate-stack-increase
 (define-public (delegate-stack-extend
