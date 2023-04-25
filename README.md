@@ -8,7 +8,11 @@
 ## Run
 
 ```
-clarinet test --watch
+clarinet test
+```
+
+```
+clarinet test --coverage
 ```
 
 ## Notes
