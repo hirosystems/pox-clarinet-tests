@@ -22,10 +22,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
@@ -57,10 +57,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
@@ -82,10 +82,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
@@ -119,10 +119,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
@@ -156,10 +156,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
@@ -213,10 +213,10 @@ Clarinet.test({
         [
           types.uint(initialAmount),
           types.tuple({
-            version: types.buff(Uint8Array.from([5])),
+            version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
               Uint8Array.from([
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
               ])
             ),
           }),
