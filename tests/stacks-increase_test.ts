@@ -25,7 +25,7 @@ Clarinet.test({
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -55,7 +55,7 @@ Clarinet.test({
     // Call `stack-increase` to increase the lock amount
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy)],
         sender.address
@@ -81,7 +81,7 @@ Clarinet.test({
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -105,7 +105,7 @@ Clarinet.test({
     // Attempt to call `stack-increase` with an amount greater than the unlocked STX
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy)],
         sender.address
@@ -132,7 +132,7 @@ Clarinet.test({
     // Attempt to call `stack-increase` without having any STX locked initially
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy)],
         sender.address
@@ -160,7 +160,7 @@ Clarinet.test({
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -184,7 +184,7 @@ Clarinet.test({
     // Attempt to call `stack-increase` with an invalid amount
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy)],
         sender.address
@@ -213,7 +213,7 @@ Clarinet.test({
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -237,7 +237,7 @@ Clarinet.test({
     // Attempt to call `stack-increase` with a different tx-sender
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy)],
         sender2.address
@@ -276,9 +276,9 @@ Clarinet.test({
     // Call `delegate-stx` to allow delegator to lock STX on behalf of sender1, sender2, and sender3
     /*
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'delegate-stx', [types.uint(initialAmount1 + increaseBy1), delegator.address, types.none(), types.uint(lockPeriod)], sender1.address),
-      Tx.contractCall('pox-2', 'delegate-stx', [types.uint(initialAmount2 + increaseBy2), delegator.address, types.none(), types.uint(lockPeriod)], sender2.address),
-      Tx.contractCall('pox-2', 'delegate-stx', [types.uint(initialAmount3 + increaseBy3), delegator.address, types.none(), types.uint(lockPeriod)], sender3.address)
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount1 + increaseBy1), delegator.address, types.none(), types.uint(lockPeriod)], sender1.address),
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount2 + increaseBy2), delegator.address, types.none(), types.uint(lockPeriod)], sender2.address),
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount3 + increaseBy3), delegator.address, types.none(), types.uint(lockPeriod)], sender3.address)
     ]);
     block.receipts[0].result.expectOk();
     block.receipts[1].result.expectOk();
@@ -286,26 +286,26 @@ Clarinet.test({
     
     // Delegator locks STX on behalf of sender1, sender2, and sender3
     let block = chain.mineBlock([
-      Tx.contractCall('pox-2', 'stack-aggregation-commit', [types.uint(initialAmount1 + initialAmount2 + initialAmount3)], delegator.address)
+      Tx.contractCall('pox-3', 'stack-aggregation-commit', [types.uint(initialAmount1 + initialAmount2 + initialAmount3)], delegator.address)
     ]);
     block.receipts[0].result.expectOk();
   */
     // sender1, sender2, and sender3 call `stack-increase` to increase their locked STX
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy1)],
         sender1.address
       ),
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy2)],
         sender2.address
       ),
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-increase",
         [types.uint(increaseBy3)],
         sender3.address

@@ -17,7 +17,7 @@ Clarinet.test({
 
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -52,7 +52,7 @@ Clarinet.test({
     // First stack operation
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -77,7 +77,7 @@ Clarinet.test({
     // Second stack operation (attempting to stack again)
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -114,7 +114,7 @@ Clarinet.test({
 
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -151,7 +151,7 @@ Clarinet.test({
 
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),
@@ -190,7 +190,7 @@ Clarinet.test({
     // Delegate operation
     let block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "delegate-stx",
         [
           types.uint(initialAmount),
@@ -208,7 +208,7 @@ Clarinet.test({
     // Attempt to stack after delegating
     block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "stack-stx",
         [
           types.uint(initialAmount),

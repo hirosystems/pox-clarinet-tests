@@ -14,7 +14,7 @@ Clarinet.test({
 
     const block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "set-burnchain-parameters",
         [
           types.uint(100),
@@ -39,7 +39,7 @@ Clarinet.test({
 
     chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "set-burnchain-parameters",
         [
           types.uint(100),
@@ -54,7 +54,7 @@ Clarinet.test({
 
     const block = chain.mineBlock([
       Tx.contractCall(
-        "pox-2",
+        "pox-3",
         "set-burnchain-parameters",
         [
           types.uint(100),
