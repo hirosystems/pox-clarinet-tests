@@ -107,7 +107,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "reject-pox: Can't vote for rejection multiple times",
+  name: "reject-pox: Can't vote multiple times",
   async fn(chain: Chain, accounts: Map<string, Account>) {
         const deployer = accounts.get("deployer")!;
         const wallet_1 = accounts.get("wallet_1")!;
@@ -115,18 +115,8 @@ Clarinet.test({
 
         const ERR_STACKING_ALREADY_REJECTED = 17;
 
-        // PoX should be active next cycle
-        let block = chain.callReadOnlyFn(
-            "pox-3",
-            "is-pox-active",
-            [
-                types.uint(1),
-            ],
-            deployer.address
-        ).result.expectBool(true);
-
         // Wallet 1 rejects PoX rewards
-        block = chain.mineBlock([
+        let block = chain.mineBlock([
             Tx.contractCall(
                 "pox-3",
                 "reject-pox",
@@ -150,15 +140,58 @@ Clarinet.test({
 
         assertEquals(block.receipts.length, 1);
         block.receipts[0].result.expectErr().expectInt(ERR_STACKING_ALREADY_REJECTED);
+  },
+});
 
-        // PoX should still be active next cycle
-        block = chain.callReadOnlyFn(
-            "pox-3",
-            "is-pox-active",
-            [
-                types.uint(1),
-            ],
-            deployer.address
-        ).result.expectBool(true);
+Clarinet.test({
+  name: "reject-pox: Stacker can't vote",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+        const deployer = accounts.get("deployer")!;
+        const wallet_1 = accounts.get("wallet_1")!;
+        const wallet_2 = accounts.get("wallet_2")!;
+
+        const initialAmount = 50000;
+        const startBurnHeight = 10;
+        const lockPeriod = 10;
+
+        // Stack STX
+        let block = chain.mineBlock([
+            Tx.contractCall(
+                "pox-3",
+                "stack-stx",
+                [
+                    types.uint(initialAmount),
+                    types.tuple({
+                        version: types.buff(Uint8Array.from([4])),
+                        hashbytes: types.buff(
+                            Uint8Array.from([
+                                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+                            ])
+                        ),
+                    }),
+                    types.uint(startBurnHeight),
+                    types.uint(lockPeriod),
+                ],
+                wallet_1.address
+            ),
+        ]);
+
+        assertEquals(block.receipts.length, 1);
+        block.receipts[0].result.expectOk();
+
+        const ERR_STACKING_ALREADY_STACKED = 3;
+
+        // Wallet 1 rejects PoX rewards
+        block = chain.mineBlock([
+            Tx.contractCall(
+                "pox-3",
+                "reject-pox",
+                [],
+                wallet_1.address
+            ),
+        ]);
+
+        assertEquals(block.receipts.length, 1);
+        block.receipts[0].result.expectErr().expectInt(ERR_STACKING_ALREADY_STACKED);
   },
 });
