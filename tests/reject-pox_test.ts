@@ -7,7 +7,7 @@ import {
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 import { BuiltIn } from "./models/builtin.ts";
-import * as Constants from "./common/constants.ts";
+import * as constants from "./common/constants.ts";
 
 Clarinet.test({
   name: "reject-pox: Test PoX rejection",
@@ -41,13 +41,18 @@ Clarinet.test({
         assertEquals(block.receipts.length, 1);
         block.receipts[0].result.expectOk().expectBool(true);
 
-        // Get PoX info
+        // Get PoX info, confirm rejection fraction changed
         let poxInfo = chain.callReadOnlyFn(
-            "pox-3",
-            "get-pox-info",
-            [],
-            deployer.address
-        ).result.expectOk();
+                "pox-3",
+                "get-pox-info",
+                [],
+                deployer.address
+            )
+            .result
+            .expectOk()
+            .expectTuple();
+
+        poxInfo['rejection-fraction'].expectUint(rejectionFraction);
 
         // PoX should be active next cycle
         block = chain.callReadOnlyFn(
@@ -138,7 +143,7 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(Constants.ERR_STACKING_ALREADY_REJECTED);
+        block.receipts[0].result.expectErr().expectInt(constants.ERR_STACKING_ALREADY_REJECTED);
   },
 });
 
@@ -189,6 +194,6 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(Constants.ERR_STACKING_ALREADY_STACKED);
+        block.receipts[0].result.expectErr().expectInt(constants.ERR_STACKING_ALREADY_STACKED);
   },
 });

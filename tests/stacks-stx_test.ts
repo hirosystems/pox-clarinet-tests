@@ -6,7 +6,7 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
-import * as Constants from "./common/constants.ts";
+import * as constants from "./common/constants.ts";
 
 Clarinet.test({
   name: "stack-stx: successfully lock STX",
@@ -100,7 +100,7 @@ Clarinet.test({
     assertEquals(block.receipts.length, 1);
     block.receipts[0].result
       .expectErr()
-      .expectInt(Constants.ERR_STACKING_ALREADY_STACKED);
+      .expectInt(constants.ERR_STACKING_ALREADY_STACKED);
   },
 });
 
@@ -136,7 +136,7 @@ Clarinet.test({
     assertEquals(block.receipts.length, 1);
     block.receipts[0].result
       .expectErr()
-      .expectInt(Constants.ERR_STACKING_INSUFFICIENT_FUNDS);
+      .expectInt(constants.ERR_STACKING_INSUFFICIENT_FUNDS);
   },
 });
 
@@ -172,7 +172,7 @@ Clarinet.test({
     assertEquals(block.receipts.length, 1);
     block.receipts[0].result
       .expectErr()
-      .expectInt(Constants.ERR_INVALID_START_BURN_HEIGHT);
+      .expectInt(constants.ERR_INVALID_START_BURN_HEIGHT);
   },
 });
 
@@ -228,6 +228,6 @@ Clarinet.test({
     assertEquals(block.receipts.length, 1);
     block.receipts[0].result
       .expectErr()
-      .expectInt(Constants.ERR_STACKING_ALREADY_DELEGATED);
+      .expectInt(constants.ERR_STACKING_ALREADY_DELEGATED);
   },
 });
