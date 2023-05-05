@@ -7,6 +7,7 @@ import {
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 import { BuiltIn } from "./models/builtin.ts";
+import * as Constants from "./common/constants.ts";
 
 Clarinet.test({
   name: "reject-pox: Test PoX rejection",
@@ -113,8 +114,6 @@ Clarinet.test({
         const wallet_1 = accounts.get("wallet_1")!;
         const wallet_2 = accounts.get("wallet_2")!;
 
-        const ERR_STACKING_ALREADY_REJECTED = 17;
-
         // Wallet 1 rejects PoX rewards
         let block = chain.mineBlock([
             Tx.contractCall(
@@ -139,7 +138,7 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(ERR_STACKING_ALREADY_REJECTED);
+        block.receipts[0].result.expectErr().expectInt(Constants.ERR_STACKING_ALREADY_REJECTED);
   },
 });
 
@@ -179,8 +178,6 @@ Clarinet.test({
         assertEquals(block.receipts.length, 1);
         block.receipts[0].result.expectOk();
 
-        const ERR_STACKING_ALREADY_STACKED = 3;
-
         // Wallet 1 rejects PoX rewards
         block = chain.mineBlock([
             Tx.contractCall(
@@ -192,6 +189,6 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(ERR_STACKING_ALREADY_STACKED);
+        block.receipts[0].result.expectErr().expectInt(Constants.ERR_STACKING_ALREADY_STACKED);
   },
 });
