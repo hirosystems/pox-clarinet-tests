@@ -10,7 +10,6 @@ import { BuiltIn } from "./models/builtin.ts";
 
 Clarinet.test({
   name: "reject-pox: Test PoX rejection",
-
   async fn(chain: Chain, accounts: Map<string, Account>) {
         const deployer = accounts.get("deployer")!;
         const wallet_1 = accounts.get("wallet_1")!;
@@ -104,5 +103,62 @@ Clarinet.test({
             ],
             deployer.address
         ).result.expectBool(false);
+  },
+});
+
+Clarinet.test({
+  name: "reject-pox: Can't vote for rejection multiple times",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+        const deployer = accounts.get("deployer")!;
+        const wallet_1 = accounts.get("wallet_1")!;
+        const wallet_2 = accounts.get("wallet_2")!;
+
+        const ERR_STACKING_ALREADY_REJECTED = 17;
+
+        // PoX should be active next cycle
+        let block = chain.callReadOnlyFn(
+            "pox-3",
+            "is-pox-active",
+            [
+                types.uint(1),
+            ],
+            deployer.address
+        ).result.expectBool(true);
+
+        // Wallet 1 rejects PoX rewards
+        block = chain.mineBlock([
+            Tx.contractCall(
+                "pox-3",
+                "reject-pox",
+                [],
+                wallet_1.address
+            ),
+        ]);
+
+        assertEquals(block.receipts.length, 1);
+        block.receipts[0].result.expectOk().expectBool(true);
+
+        // Wallet 1 rejects PoX rewards again
+        block = chain.mineBlock([
+            Tx.contractCall(
+                "pox-3",
+                "reject-pox",
+                [],
+                wallet_1.address
+            ),
+        ]);
+
+        assertEquals(block.receipts.length, 1);
+        block.receipts[0].result.expectErr().expectInt(ERR_STACKING_ALREADY_REJECTED);
+
+        // PoX should still be active next cycle
+        block = chain.callReadOnlyFn(
+            "pox-3",
+            "is-pox-active",
+            [
+                types.uint(1),
+            ],
+            deployer.address
+        ).result.expectBool(true);
   },
 });
