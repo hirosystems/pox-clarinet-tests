@@ -10,7 +10,7 @@ import { BuiltIn } from "./models/builtin.ts";
 import * as constants from "./common/constants.ts";
 
 Clarinet.test({
-  name: "stack-increase: increase STX lock amount",
+  name: "stack-increase: Increase STX lock amount",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
@@ -69,7 +69,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-increase: attempt to increase with insufficient funds",
+  name: "stack-increase: Attempt to increase with insufficient funds",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
@@ -119,7 +119,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-increase: attempt to increase without initial lock",
+  name: "stack-increase: Attempt to increase without initial lock",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
@@ -145,7 +145,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-increase: attempt to increase with an invalid amount",
+  name: "stack-increase: Attempt to increase with an invalid amount",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
@@ -195,7 +195,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-increase: attempt to increase with denied permission",
+  name: "stack-increase: Attempt to increase with denied permission",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
@@ -249,7 +249,7 @@ Clarinet.test({
 // The test checks the amounts distributed to each user after a reward cycle is completed. The `calculateExpectedReward`
 // function calculates the expected reward for each user based on their locked STX and the total locked STX in the cycle.
 Clarinet.test({
-  name: "stack-increase: combined with delegate-stx and verifying distribution",
+  name: "stack-increase: Combined with delegate-stx and verifying distribution",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;

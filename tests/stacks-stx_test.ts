@@ -9,7 +9,7 @@ import {
 import * as constants from "./common/constants.ts";
 
 Clarinet.test({
-  name: "stack-stx: successfully lock STX",
+  name: "stack-stx: Successfully lock STX",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
@@ -43,7 +43,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-stx: already stacking user cannot stack again",
+  name: "stack-stx: Already stacking user cannot stack again",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
@@ -105,7 +105,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-stx: user with insufficient funds cannot stack",
+  name: "stack-stx: User with insufficient funds cannot stack",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const initialAmount = 100000000; // An amount greater than the user's balance
@@ -141,7 +141,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-stx: user with invalid start burn height cannot stack",
+  name: "stack-stx: User with invalid start burn height cannot stack",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
@@ -177,7 +177,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "stack-stx: user who is already delegating cannot stack",
+  name: "stack-stx: User who is already delegating cannot stack",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const delegate = accounts.get("wallet_2")!;

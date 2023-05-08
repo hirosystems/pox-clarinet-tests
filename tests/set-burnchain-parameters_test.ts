@@ -8,7 +8,7 @@ import {
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 
 Clarinet.test({
-  name: "set-burnchain-parameters: can be called successfully for the first time",
+  name: "set-burnchain-parameters: Can be called successfully for the first time",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
 
@@ -33,7 +33,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "set-burnchain-parameters: cannot be called twice",
+  name: "set-burnchain-parameters: Cannot be called twice",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
 
