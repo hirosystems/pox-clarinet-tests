@@ -7,7 +7,7 @@ import {
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 import { BuiltIn } from "./models/builtin.ts";
-import * as constants from "./common/constants.ts";
+import * as constants from "./models/pox-3-constants.ts";
 
 Clarinet.test({
   name: "reject-pox: Test PoX rejection",

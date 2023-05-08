@@ -6,7 +6,7 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
-import * as constants from "./common/constants.ts";
+import * as constants from "./models/pox-3-constants.ts";
 
 Clarinet.test({
   name: "stack-stx: Successfully lock STX",
