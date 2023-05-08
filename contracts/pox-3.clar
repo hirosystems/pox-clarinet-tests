@@ -22,6 +22,58 @@
 (define-constant STACKING_THRESHOLD_100 u5000)
 ;; END pox-mainnet.clar
 
+;; BEGIN replacement for broken built-ins
+;; Get locked STX for an account, since the built-in `stx-account` doesn't work here
+(define-private (stx-locked-on-index (pair { addr: principal, index: uint} ))
+    (let (
+            (addr (get addr pair))
+            (index (get index pair))
+            (cycle (current-pox-reward-cycle))
+
+            (cycle-index (unwrap! (map-get? reward-cycle-pox-address-list { reward-cycle: cycle, index: index }) u0))
+            (stacker (unwrap! (get stacker cycle-index) u0))
+        )
+
+        (if (is-eq stacker addr)
+            (get total-ustx cycle-index)
+            u0
+        )
+    )
+)
+
+;; Get locked STX for an account, since the built-in `stx-account` doesn't work here
+(define-read-only (stx-locked-pox3-clarinet (addr principal))
+    (let (
+            (keys
+                (list
+                    {addr: addr, index: u0 }
+                    {addr: addr, index: u1 }
+                    {addr: addr, index: u2 }
+                    {addr: addr, index: u3 }
+                    {addr: addr, index: u4 }
+                    {addr: addr, index: u5 }
+                    {addr: addr, index: u6 }
+                    {addr: addr, index: u7 }
+                    {addr: addr, index: u8 }
+                    {addr: addr, index: u9 }
+                )
+            )
+            (cycle (current-pox-reward-cycle))
+            (stx-amounts (map stx-locked-on-index keys))
+        )
+
+        ;; Assert that we can reach all indices
+        ;;(asserts! (<= (get-reward-set-size cycle) u9) (err u1))
+        (fold + stx-amounts u0)
+    )
+)
+;; END replacement for broken built-ins
+
+;; Alternative version of `stx-account`, since the built-in version doesn't work here
+;;(define-read-only (stx-account-pox3-clarinet (addr principal))
+;;    (stx-account addr)
+;;)
+
 ;; The .pox-3 contract
 ;; Error codes
 (define-constant ERR_STACKING_UNREACHABLE 255)
