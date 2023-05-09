@@ -79,6 +79,59 @@ Clarinet.test({
 });
 
 Clarinet.test({
+  name: "stack-increase: Attempt to increase STX lock amount before funds are locked",
+
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const deployer = accounts.get("deployer")!;
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
+    let sender = accounts.get("wallet_1")!;
+    const initialAmount = 50000;
+    const increaseBy = 1000;
+
+    // Check that the lock amount is 0
+    pox3.stxLockedFromPox3Data(sender.address)
+      .result
+      .expectUint(0);
+
+    // Call `stack-stx` to lock some STX
+    let block = chain.mineBlock([
+      Tx.contractCall(
+        "pox-3",
+        "stack-stx",
+        [
+          types.uint(initialAmount),
+          types.tuple({
+            version: types.buff(Uint8Array.from([4])),
+            hashbytes: types.buff(
+              Uint8Array.from([
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+              ])
+            ),
+          }),
+          types.uint(10),
+          types.uint(10),
+        ],
+        sender.address
+      ),
+    ]);
+    assertEquals(block.receipts.length, 1);
+    block.receipts[0].result.expectOk();
+
+    // Call `stack-increase` to increase the lock amount
+    block = chain.mineBlock([
+      Tx.contractCall(
+        "pox-3",
+        "stack-increase",
+        [types.uint(increaseBy)],
+        sender.address
+      ),
+    ]);
+    assertEquals(block.receipts.length, 1);
+    block.receipts[0].result.expectErr(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
+  },
+});
+
+Clarinet.test({
   name: "stack-increase: Attempt to increase with insufficient funds",
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
