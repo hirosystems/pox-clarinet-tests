@@ -51,6 +51,12 @@ import {
             types.principal(accountAddress)
       ], this.deployer.address);
     }
+
+    stxAccountFromPox3Data(accountAddress: string) {
+      return this.chain.callReadOnlyFn("pox3", "stx-account-from-pox3-data", [
+            types.principal(accountAddress)
+      ], this.deployer.address);
+    }
   }  
 
   export { Pox3 };

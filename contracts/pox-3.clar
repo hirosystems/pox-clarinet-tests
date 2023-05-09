@@ -67,6 +67,25 @@
         (fold + stx-amounts u0)
     )
 )
+
+(define-read-only (stx-account-from-pox3-data (addr principal))
+    (let (
+            (account (stx-account addr))
+            ;; In this environment, `stx-account` onsiders all STX to be unlocked
+            (total-stx (get unlocked account))
+            (unlock-height (get unlock-height account))
+            (locked (stx-locked-from-pox3-data addr))
+        )
+
+        {
+            locked: locked,
+            ;; FIXME: I don't think `unlock-height` will be correct here
+            ;; Probably doesn't matter for most testing
+            unlock-height: unlock-height,
+            unlocked: (- total-stx locked),
+        }
+    )
+)
 ;; END replacement for broken built-ins
 
 ;; Alternative version of `stx-account`, since the built-in version doesn't work here
