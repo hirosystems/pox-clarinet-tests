@@ -47,15 +47,34 @@ import {
     // NOTE: `stx-account` function doesn't seem to work with current (1.5.4) version of Clarinet
     //        Use `stx-locked-from-pox3-data` instead
     stxLockedFromPox3Data(accountAddress: string) {
-      return this.chain.callReadOnlyFn("pox3", "stx-locked-from-pox-3-data", [
+      return this.chain.callReadOnlyFn(
+        "pox-3",
+        "stx-locked-from-pox3-data",
+        [
             types.principal(accountAddress)
-      ], this.deployer.address);
+        ],
+        this.deployer.address
+      );
     }
 
     stxAccountFromPox3Data(accountAddress: string) {
-      return this.chain.callReadOnlyFn("pox3", "stx-account-from-pox3-data", [
+      return this.chain.callReadOnlyFn(
+        "pox-3",
+        "stx-account-from-pox3-data",
+        [
             types.principal(accountAddress)
-      ], this.deployer.address);
+        ],
+        this.deployer.addres
+      );
+    }
+
+    currentPoxRewardCycle() {
+      return this.chain.callReadOnlyFn(
+        "pox-3",
+        "current-pox-reward-cycle",
+        [],
+        this.deployer.address
+      );
     }
   }  
 

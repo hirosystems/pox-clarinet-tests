@@ -6,11 +6,13 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
+import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({
   name: "stx-locked-from-pox3-data: Check locked amount after stacking",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     const initialAmount = 50000;
     const startBurnHeight = 10;
     const lockPeriod = 10;
@@ -40,28 +42,26 @@ Clarinet.test({
     block.receipts[0].result.expectOk();
 
     // Check we are on cycle 0
-    let cycle = chain.callReadOnlyFn("pox-3", "current-pox-reward-cycle", [], sender.address)
+    pox3.currentPoxRewardCycle()
       .result
       .expectUint(0)
+
+    // Confirm STX is not locked yet
+    pox3.stxLockedFromPox3Data(sender.address)
+      .result
+      .expectUint(0);
 
     // Advance to next cycle
     chain.mineEmptyBlockUntil(3000);
 
     // Check we are on cycle 1
-    cycle = chain.callReadOnlyFn("pox-3", "current-pox-reward-cycle", [], sender.address)
+    pox3.currentPoxRewardCycle()
       .result
       .expectUint(1)
 
-    // Get PoX info, confirm rejection fraction changed
-    let poxInfo = chain.callReadOnlyFn(
-        "pox-3",
-        "stx-locked-from-pox3-data",
-        [
-          types.principal(sender.address)
-        ],
-        sender.address
-      )
+    // Confirm STX is now locked
+    pox3.stxLockedFromPox3Data(sender.address)
       .result
-      .expectUint(initialAmount)
+      .expectUint(initialAmount);
   },
 });

@@ -68,6 +68,7 @@
     )
 )
 
+;; Use this instead of `stx-account` when running in Clarinet
 (define-read-only (stx-account-from-pox3-data (addr principal))
     (let (
             (account (stx-account addr))
