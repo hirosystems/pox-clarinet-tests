@@ -7,7 +7,7 @@ import {
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 import { BuiltIn } from "./models/builtin.ts";
-import * as constants from "./models/pox-3-constants.ts";
+import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({
   name: "stack-increase: Increase STX lock amount",
@@ -114,7 +114,7 @@ Clarinet.test({
     // Check that the call to `stack-increase` failed
     block.receipts[0].result
       .expectErr()
-      .expectInt(constants.ERR_STACK_INCREASE_NOT_LOCKED);
+      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -140,7 +140,7 @@ Clarinet.test({
     // Check that the call to `stack-increase` failed
     block.receipts[0].result
       .expectErr()
-      .expectInt(constants.ERR_STACK_INCREASE_NOT_LOCKED);
+      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -190,7 +190,7 @@ Clarinet.test({
     // Check that the call to `stack-increase` failed
     block.receipts[0].result
       .expectErr()
-      .expectInt(constants.ERR_STACK_INCREASE_NOT_LOCKED);
+      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -241,7 +241,7 @@ Clarinet.test({
     // Check that the call to `stack-increase` failed
     block.receipts[0].result
       .expectErr()
-      .expectInt(constants.ERR_STACK_INCREASE_NOT_LOCKED);
+      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 

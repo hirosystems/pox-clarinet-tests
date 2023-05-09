@@ -7,7 +7,7 @@ import {
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
 import { BuiltIn } from "./models/builtin.ts";
-import * as constants from "./models/pox-3-constants.ts";
+import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({
   name: "reject-pox: Test PoX rejection",
@@ -143,7 +143,7 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(constants.ERR_STACKING_ALREADY_REJECTED);
+        block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_REJECTED);
   },
 });
 
@@ -194,6 +194,6 @@ Clarinet.test({
         ]);
 
         assertEquals(block.receipts.length, 1);
-        block.receipts[0].result.expectErr().expectInt(constants.ERR_STACKING_ALREADY_STACKED);
+        block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_STACKED);
   },
 });

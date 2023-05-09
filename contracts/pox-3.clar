@@ -41,8 +41,8 @@
     )
 )
 
-;; Get locked STX for an account, since the built-in `stx-account` doesn't work here
-(define-read-only (stx-locked-pox3-clarinet (addr principal))
+;; Get locked STX for an account from data in PoX3 contract, since the built-in `stx-account` doesn't work here
+(define-read-only (stx-locked-from-pox3-data (addr principal))
     (let (
             (keys
                 (list
