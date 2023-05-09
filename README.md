@@ -7,21 +7,15 @@
 
 ## Run
 
-```
-clarinet test
-```
-
-```
-clarinet test --coverage
+```sh
+clarinet test             # Run tests
+clarinet test --coverage  # Run tests and generate coverage.lcov file
 ```
 
 ## Notes
 
 - `pox-mainnet.clar` constants are hardcoded in to `pox-2.clar`.
-- A check in `stack-stx` was comment out to avoid some complex checks for hashbytes.
-```
-;;DEBUG (try! (can-stack-stx pox-addr amount-ustx first-reward-cycle lock-period))
-```
+- `The build-in function `stx-account` doesn't work in this test environment. Use `stx-locked-from-pox-3-data` instead
 
 ## Functions
 
