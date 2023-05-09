@@ -44,7 +44,7 @@ Clarinet.test({
     // Check we are on cycle 0
     pox3.currentPoxRewardCycle()
       .result
-      .expectUint(0)
+      .expectUint(0);
 
     // Confirm STX is not locked yet
     pox3.stxLockedFromPox3Data(sender.address)
@@ -57,7 +57,7 @@ Clarinet.test({
     // Check we are on cycle 1
     pox3.currentPoxRewardCycle()
       .result
-      .expectUint(1)
+      .expectUint(1);
 
     // Confirm STX is now locked
     pox3.stxLockedFromPox3Data(sender.address)

@@ -14,14 +14,15 @@ Clarinet.test({
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
-    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     let sender = accounts.get("wallet_1")!;
     const initialAmount = 50000;
     const increaseBy = 1000;
 
     // Check that the lock amount is 0
-    let result = builtin.getSTXAccount(sender.address);
-    result.result.expectTuple().locked.expectUint(0);
+    pox3.stxLockedFromPox3Data(sender.address)
+      .result
+      .expectUint(0);
 
     // Call `stack-stx` to lock some STX
     let block = chain.mineBlock([
@@ -45,12 +46,15 @@ Clarinet.test({
       ),
     ]);
     assertEquals(block.receipts.length, 1);
-    assertEquals(block.height, 2);
     block.receipts[0].result.expectOk();
 
-    // Check that the lock amount is initialAmount
-    result = builtin.getSTXAccount(sender.address);
-    result.result.expectTuple().locked.expectUint(0);
+    // Advance to next reward cycle
+    chain.mineEmptyBlockUntil(block.height + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH);
+
+    // Check that STX is locked
+    pox3.stxLockedFromPox3Data(sender.address)
+      .result
+      .expectUint(initialAmount);
 
     // Call `stack-increase` to increase the lock amount
     block = chain.mineBlock([
@@ -61,10 +65,16 @@ Clarinet.test({
         sender.address
       ),
     ]);
+    assertEquals(block.receipts.length, 1);
+    block.receipts[0].result.expectOk();
 
-    // Check that the lock amount was increased
-    result = builtin.getSTXAccount(sender.address);
-    result.result.expectTuple().locked.expectUint(0);
+    // Advance to next reward cycle
+    chain.mineEmptyBlockUntil(block.height + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH);
+
+    // Check that the lock amount initial + increase
+    pox3.stxLockedFromPox3Data(sender.address)
+      .result
+      .expectUint(initialAmount + increaseBy);
   },
 });
 

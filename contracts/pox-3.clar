@@ -1067,7 +1067,8 @@
 ;; This method locks up an additional amount of STX from `tx-sender`'s, indicated
 ;; by `increase-by`.  The `tx-sender` must already be Stacking.
 (define-public (stack-increase (increase-by uint))
-   (let ((stacker-info (stx-account tx-sender))
+   ;;DEBUG (let ((stacker-info (stx-account tx-sender))
+   (let ((stacker-info (stx-account-from-pox3-data tx-sender))
          (amount-stacked (get locked stacker-info))
          (amount-unlocked (get unlocked stacker-info))
          (unlock-height (get unlock-height stacker-info))

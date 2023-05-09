@@ -6,8 +6,20 @@ import {
     types,
   } from "https://deno.land/x/clarinet@v1.2.0/index.ts";
   
+  // Provide some common constants and contract calls here to simplify writing test cases
   class Pox3 {
     // Constants
+    // These must match what is defined in pox-3.clar
+    public static readonly MIN_POX_REWARD_CYCLES = 1;
+    public static readonly MAX_POX_REWARD_CYCLES = 12;
+    public static readonly PREPARE_CYCLE_LENGTH = 100;
+    public static readonly REWARD_CYCLE_LENGTH = 2100;
+    public static readonly ADDRESS_VERSION_P2PKH = 0x00;
+    public static readonly ADDRESS_VERSION_P2SH = 0x01;
+    public static readonly ADDRESS_VERSION_P2WPKH = 0x02;
+    public static readonly ADDRESS_VERSION_P2WSH = 0x03;
+    public static readonly STACKING_THRESHOLD_25 = 20000;
+    public static readonly STACKING_THRESHOLD_100 = 5000;
     public static readonly ERR_STACKING_UNREACHABLE = 255;
     public static readonly ERR_STACKING_CORRUPTED_STATE = 254;
     public static readonly ERR_STACKING_INSUFFICIENT_FUNDS = 1;
@@ -57,6 +69,8 @@ import {
       );
     }
 
+    // NOTE: `stx-account` function doesn't seem to work with current (1.5.4) version of Clarinet
+    //        Use `stx-locked-from-pox3-data` instead
     stxAccountFromPox3Data(accountAddress: string) {
       return this.chain.callReadOnlyFn(
         "pox-3",
