@@ -125,7 +125,7 @@ Clarinet.test({
       ),
     ]);
     assertEquals(block.receipts.length, 1);
-    block.receipts[0].result.expectErr(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
@@ -183,7 +183,7 @@ Clarinet.test({
     ]);
 
     // Check that the call to `stack-increase` failed
-    block.receipts[0].result.expectErr(Pox3.ERR_STACKING_INSUFFICIENT_FUNDS);
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_INSUFFICIENT_FUNDS);
   },
 });
 
@@ -325,6 +325,7 @@ Clarinet.test({
 
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     const builtin = new BuiltIn(chain, accounts.get("deployer")!);
     let delegator = accounts.get("wallet_1")!;
     let sender1 = accounts.get("wallet_2")!;
@@ -376,6 +377,7 @@ Clarinet.test({
         sender3.address
       ),
     ]);
+    assertEquals(block.receipts.length, 3);
     block.receipts[0].result.expectErr();
     block.receipts[1].result.expectErr();
     block.receipts[2].result.expectErr();
