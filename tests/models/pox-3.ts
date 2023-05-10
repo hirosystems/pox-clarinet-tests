@@ -78,7 +78,7 @@ import {
         [
             types.principal(accountAddress)
         ],
-        this.deployer.addres
+        this.deployer.address
       );
     }
 
