@@ -268,8 +268,7 @@ Clarinet.test({
 Clarinet.test({
   name: "stack-increase: Attempt to increase with denied permission",
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const deployer = accounts.get("deployer")!;
-    const builtin = new BuiltIn(chain, accounts.get("deployer")!);
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     let sender = accounts.get("wallet_1")!;
     let sender2 = accounts.get("wallet_2")!;
     const initialAmount = 50000;
@@ -298,6 +297,9 @@ Clarinet.test({
     ]);
     block.receipts[0].result.expectOk();
 
+    // Advance to next reward cycle
+    pox3.advanceByFullCycle();
+
     // Attempt to call `stack-increase` with a different tx-sender
     block = chain.mineBlock([
       Tx.contractCall(
@@ -309,9 +311,9 @@ Clarinet.test({
     ]);
 
     // Check that the call to `stack-increase` failed
-    block.receipts[0].result
-      .expectErr()
-      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
+    // This returns ERR_STACK_INCREASE_NOT_LOCKED because sender2 is not stacking
+    assertEquals(block.receipts.length, 1);
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
   },
 });
 
