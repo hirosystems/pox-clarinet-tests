@@ -6,7 +6,6 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
-import { BuiltIn } from "./models/builtin.ts";
 import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({

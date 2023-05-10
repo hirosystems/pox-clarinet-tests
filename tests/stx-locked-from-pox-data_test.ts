@@ -9,7 +9,7 @@ import {
 import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({
-  name: "stx-locked-from-pox3-data: Check locked amount after stacking",
+  name: "stx-locked-from-pox-data: Check locked amount after stacking",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const sender = accounts.get("wallet_1")!;
     const pox3 = new Pox3(chain, accounts.get("deployer")!);
@@ -47,7 +47,7 @@ Clarinet.test({
       .expectUint(0);
 
     // Confirm STX is not locked yet
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(0);
 
@@ -60,7 +60,7 @@ Clarinet.test({
       .expectUint(1);
 
     // Confirm STX is now locked
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(initialAmount);
   },

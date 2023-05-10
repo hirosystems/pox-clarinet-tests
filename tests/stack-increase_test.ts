@@ -19,7 +19,7 @@ Clarinet.test({
     const increaseBy = 1000;
 
     // Check that the lock amount is 0
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(0);
 
@@ -51,7 +51,7 @@ Clarinet.test({
     pox3.advanceByFullCycle();
 
     // Check that STX is locked
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(initialAmount);
 
@@ -71,7 +71,7 @@ Clarinet.test({
     pox3.advanceByFullCycle();
 
     // Check that the lock amount initial + increase
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(initialAmount + increaseBy);
   },
@@ -87,7 +87,7 @@ Clarinet.test({
     const increaseBy = 1000;
 
     // Check that the lock amount is 0
-    pox3.stxLockedFromPox3Data(sender.address)
+    pox3.stxLockedFromPoxData(sender.address)
       .result
       .expectUint(0);
 
@@ -165,7 +165,7 @@ Clarinet.test({
     pox3.advanceByFullCycle();
 
     // Confirm STX is now locked
-    let account = pox3.stxAccountFromPox3Data(sender.address)
+    let account = pox3.stxAccountFromPoxData(sender.address)
       .result
       .expectTuple();
 
@@ -267,7 +267,6 @@ Clarinet.test({
 
 Clarinet.test({
   name: "stack-increase: Attempt to increase with denied permission",
-
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
     const builtin = new BuiltIn(chain, accounts.get("deployer")!);

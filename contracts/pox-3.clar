@@ -41,8 +41,8 @@
     )
 )
 
-;; Get locked STX for an account from data in PoX3 contract, since the built-in `stx-account` doesn't work here
-(define-read-only (stx-locked-from-pox3-data (addr principal))
+;; Get locked STX for an account from data in PoX contract, since the built-in `stx-account` doesn't work here
+(define-read-only (stx-locked-from-pox-data (addr principal))
     (let (
             (keys
                 (list
@@ -69,13 +69,13 @@
 )
 
 ;; Use this instead of `stx-account` when running in Clarinet
-(define-read-only (stx-account-from-pox3-data (addr principal))
+(define-read-only (stx-account-from-pox-data (addr principal))
     (let (
             (account (stx-account addr))
             ;; In this environment, `stx-account` onsiders all STX to be unlocked
             (total-stx (get unlocked account))
             (unlock-height (get unlock-height account))
-            (locked (stx-locked-from-pox3-data addr))
+            (locked (stx-locked-from-pox-data addr))
         )
 
         {
@@ -88,11 +88,6 @@
     )
 )
 ;; END replacement for broken built-ins
-
-;; Alternative version of `stx-account`, since the built-in version doesn't work here
-;;(define-read-only (stx-account-pox3-clarinet (addr principal))
-;;    (stx-account addr)
-;;)
 
 ;; The .pox-3 contract
 ;; Error codes
@@ -1068,7 +1063,7 @@
 ;; by `increase-by`.  The `tx-sender` must already be Stacking.
 (define-public (stack-increase (increase-by uint))
    ;;DEBUG (let ((stacker-info (stx-account tx-sender))
-   (let ((stacker-info (stx-account-from-pox3-data tx-sender))
+   (let ((stacker-info (stx-account-from-pox-data tx-sender))
          (amount-stacked (get locked stacker-info))
          (amount-unlocked (get unlocked stacker-info))
          (unlock-height (get unlock-height stacker-info))

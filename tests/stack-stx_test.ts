@@ -46,7 +46,7 @@ Clarinet.test({
     pox3.advanceByFullCycle();
 
     // Confirm STX is locked
-    let account = pox3.stxAccountFromPox3Data(sender.address)
+    let account = pox3.stxAccountFromPoxData(sender.address)
       .result
       .expectTuple();
 
