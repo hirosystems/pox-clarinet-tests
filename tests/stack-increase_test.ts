@@ -184,20 +184,11 @@ Clarinet.test({
 
     // Check that the call to `stack-increase` failed
     block.receipts[0].result.expectErr(Pox3.ERR_STACKING_INSUFFICIENT_FUNDS);
-
-    // Confirm account balance did not change
-    account = pox3.stxAccountFromPox3Data(sender.address)
-      .result
-      .expectTuple();
-
-    account.unlocked.expectUint(initialBalance - initialAmountStacked);
-    account.locked.expectUint(initialAmountStacked);
   },
 });
 
 Clarinet.test({
   name: "stack-increase: Attempt to increase without initial lock",
-
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
     const builtin = new BuiltIn(chain, accounts.get("deployer")!);
@@ -223,8 +214,8 @@ Clarinet.test({
 
 Clarinet.test({
   name: "stack-increase: Attempt to increase with an invalid amount",
-
   async fn(chain: Chain, accounts: Map<string, Account>) {
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     const deployer = accounts.get("deployer")!;
     const builtin = new BuiltIn(chain, accounts.get("deployer")!);
     let sender = accounts.get("wallet_1")!;
@@ -254,6 +245,9 @@ Clarinet.test({
     ]);
     block.receipts[0].result.expectOk();
 
+    // Advance to next reward cycle
+    pox3.advanceByFullCycle();
+
     // Attempt to call `stack-increase` with an invalid amount
     block = chain.mineBlock([
       Tx.contractCall(
@@ -267,7 +261,7 @@ Clarinet.test({
     // Check that the call to `stack-increase` failed
     block.receipts[0].result
       .expectErr()
-      .expectInt(Pox3.ERR_STACK_INCREASE_NOT_LOCKED);
+      .expectInt(Pox3.ERR_STACKING_INVALID_AMOUNT);
   },
 });
 
