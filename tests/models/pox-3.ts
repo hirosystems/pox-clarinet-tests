@@ -90,6 +90,13 @@ import {
         this.deployer.address
       );
     }
+
+    // Advance by # of blocks in full (prepare + reward) cycle
+    advanceByFullCycle() {
+      return this.chain.mineEmptyBlockUntil(
+        this.chain.blockHeight + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH
+      );
+    }
   }  
 
   export { Pox3 };

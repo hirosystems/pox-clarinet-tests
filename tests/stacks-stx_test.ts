@@ -11,8 +11,10 @@ import { Pox3 } from "./models/pox-3.ts";
 Clarinet.test({
   name: "stack-stx: Successfully lock STX",
   async fn(chain: Chain, accounts: Map<string, Account>) {
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
     const sender = accounts.get("wallet_1")!;
-    const initialAmount = 50000;
+    const initialBalance = sender.balance;
+    const amountStacked = 800000;
     const startBurnHeight = 10;
     const lockPeriod = 10;
 
@@ -21,7 +23,7 @@ Clarinet.test({
         "pox-3",
         "stack-stx",
         [
-          types.uint(initialAmount),
+          types.uint(amountStacked),
           types.tuple({
             version: types.buff(Uint8Array.from([4])),
             hashbytes: types.buff(
@@ -39,6 +41,17 @@ Clarinet.test({
 
     assertEquals(block.receipts.length, 1);
     block.receipts[0].result.expectOk();
+
+    // Advance to next reward cycle
+    pox3.advanceByFullCycle();
+
+    // Confirm STX is locked
+    let account = pox3.stxAccountFromPox3Data(sender.address)
+      .result
+      .expectTuple();
+
+    account.unlocked.expectUint(initialBalance - amountStacked);
+    account.locked.expectUint(amountStacked);
   },
 });
 

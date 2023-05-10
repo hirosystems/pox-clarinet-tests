@@ -48,7 +48,7 @@ Clarinet.test({
     block.receipts[0].result.expectOk();
 
     // Advance to next reward cycle
-    chain.mineEmptyBlockUntil(block.height + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH);
+    pox3.advanceByFullCycle();
 
     // Check that STX is locked
     pox3.stxLockedFromPox3Data(sender.address)
@@ -68,7 +68,7 @@ Clarinet.test({
     block.receipts[0].result.expectOk();
 
     // Advance to next reward cycle
-    chain.mineEmptyBlockUntil(block.height + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH);
+    pox3.advanceByFullCycle();
 
     // Check that the lock amount initial + increase
     pox3.stxLockedFromPox3Data(sender.address)
@@ -162,7 +162,7 @@ Clarinet.test({
     block.receipts[0].result.expectOk();
 
     // Advance to next reward cycle
-    chain.mineEmptyBlockUntil(block.height + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH);
+    pox3.advanceByFullCycle();
 
     // Confirm STX is now locked
     let account = pox3.stxAccountFromPox3Data(sender.address)
