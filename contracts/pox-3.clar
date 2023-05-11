@@ -1107,7 +1107,8 @@
 ;;    and associates `pox-addr` with the rewards
 (define-public (stack-extend (extend-count uint)
                              (pox-addr { version: (buff 1), hashbytes: (buff 32) }))
-   (let ((stacker-info (stx-account tx-sender))
+   ;;DEBUG (let ((stacker-info (stx-account tx-sender))
+   (let ((stacker-info (stx-account-from-pox-data tx-sender))
          ;; to extend, there must already be an etry in the stacking-state
          (stacker-state (unwrap! (get-stacker-info tx-sender) (err ERR_STACK_EXTEND_NOT_LOCKED)))
          (amount-ustx (get locked stacker-info))
@@ -1191,7 +1192,8 @@
                     (stacker principal)
                     (pox-addr { version: (buff 1), hashbytes: (buff 32) })
                     (increase-by uint))
-    (let ((stacker-info (stx-account stacker))
+    ;;DEBUG (let ((stacker-info (stx-account stacker))
+    (let ((stacker-info (stx-account-from-pox-data stacker))
           (existing-lock (get locked stacker-info))
           (available-stx (get unlocked stacker-info))
           (unlock-height (get unlock-height stacker-info)))
@@ -1279,7 +1281,8 @@
                     (stacker principal)
                     (pox-addr { version: (buff 1), hashbytes: (buff 32) })
                     (extend-count uint))
-    (let ((stacker-info (stx-account stacker))
+    ;;DEBUG (let ((stacker-info (stx-account stacker))
+    (let ((stacker-info (stx-account-from-pox-data stacker))
           ;; to extend, there must already be an entry in the stacking-state
           (stacker-state (unwrap! (get-stacker-info stacker) (err ERR_STACK_EXTEND_NOT_LOCKED)))
           (amount-ustx (get locked stacker-info))
