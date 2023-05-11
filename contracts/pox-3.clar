@@ -69,24 +69,32 @@
 )
 
 ;; Use this instead of `stx-account` when running in Clarinet
-(define-read-only (stx-account-from-pox-data (addr principal))
-    (let (
-            (account (stx-account addr))
-            ;; In this environment, `stx-account` onsiders all STX to be unlocked
-            (total-stx (get unlocked account))
-            (unlock-height (get unlock-height account))
-            (locked (stx-locked-from-pox-data addr))
+(define-read-only (stx-account-from-pox-data (addr principal)) (
+    let (
+        (account (stx-account addr))
+        ;; In this environment, `stx-account` onsiders all STX to be unlocked
+        (total-stx (get unlocked account))
+        (locked (stx-locked-from-pox-data addr))
+        (unlock-height (
+            match (map-get? stacking-state { stacker: addr })
+                stacker (
+                    let (
+                        (first-reward-cycle (get first-reward-cycle stacker))
+                        (lock-period (get lock-period stacker))
+                    )
+                    (+ first-reward-cycle lock-period)
+                )
+                u0
+            )
         )
-
-        {
-            locked: locked,
-            ;; FIXME: I don't think `unlock-height` will be correct here
-            ;; Probably doesn't matter for most testing
-            unlock-height: unlock-height,
-            unlocked: (- total-stx locked),
-        }
     )
-)
+
+    {
+        locked: locked,
+        unlock-height: unlock-height,
+        unlocked: (- total-stx locked),
+    }
+))
 ;; END replacement for broken built-ins
 
 ;; The .pox-3 contract

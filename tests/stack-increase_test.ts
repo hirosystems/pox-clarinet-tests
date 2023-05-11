@@ -354,8 +354,8 @@ Clarinet.test({
     assertEquals(block.receipts.length, 3);
     [0, 1, 2].forEach(i => block.receipts[i].result.expectOk());
 
-    // Delegator partial-stacks STX on behalf of sender1, sender2, and sender3
-    commonArgs = [ poxAddress, types.uint(10), types.uint(10) ];
+    // Delegate partial-stacks STX on behalf of sender1, sender2, and sender3
+    commonArgs = [ poxAddress, types.uint(10) /* unlock height */, types.uint(10) ];
     block = chain.mineBlock([
       Tx.contractCall('pox-3', 'delegate-stack-stx', [ types.principal(sender1.address), types.uint(initialAmount1), ...commonArgs], delegator.address),
       Tx.contractCall('pox-3', 'delegate-stack-stx', [ types.principal(sender2.address), types.uint(initialAmount2), ...commonArgs], delegator.address),
@@ -363,13 +363,29 @@ Clarinet.test({
     ]);
     assertEquals(block.receipts.length, 3);
     [0, 1, 2].forEach(i => block.receipts[i].result.expectOk());
+
+    // Check partial stacked balances for this cycle
+    chain.callReadOnlyFn('pox-3', 'get-partial-stacked-by-cycle', [poxAddress, types.uint(1), types.principal(delegator.address)], delegator.address)
+      .result
+      .expectSome()
+      .expectTuple()['stacked-amount']
+      .expectUint(initialAmount1 + initialAmount2 + initialAmount3);
+
+    // Check partial stacked balances expire after unlock height
+    chain.callReadOnlyFn('pox-3', 'get-partial-stacked-by-cycle', [poxAddress, types.uint(11), types.principal(delegator.address)], delegator.address)
+      .result
+      .expectNone();
     
     // Delegator commits partially stacked STX on behalf of sender1, sender2, and sender3
     block = chain.mineBlock([
       Tx.contractCall('pox-3', 'stack-aggregation-commit', [ poxAddress, types.uint(1) ], delegator.address),
     ]);
-
     block.receipts[0].result.expectOk();
+
+    // Check partial stacked balances. Should be none
+    chain.callReadOnlyFn('pox-3', 'get-partial-stacked-by-cycle', [poxAddress, types.uint(1), types.principal(delegator.address)], delegator.address)
+      .result
+      .expectNone();
 
     // Advance to next reward cycle
     pox3.advanceByFullCycle();
@@ -378,6 +394,15 @@ Clarinet.test({
 
     return
     // FIXME below
+
+    // sender1, sender2, and sender3 call `stack-increase` to increase their locked STX
+    block = chain.mineBlock([
+      Tx.contractCall('pox-3', 'stack-increase', [types.uint(increaseBy1)], sender1.address),
+      Tx.contractCall('pox-3', 'stack-increase', [types.uint(increaseBy2)], sender2.address),
+      Tx.contractCall('pox-3', 'stack-increase', [types.uint(increaseBy3)], sender3.address),
+    ]);
+    assertEquals(block.receipts.length, 3);
+    [0, 1, 2].forEach(i => block.receipts[i].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED));
 
     // Delegator partial-stacks STX on behalf of sender1, sender2, and sender3
     block = chain.mineBlock([
@@ -390,31 +415,6 @@ Clarinet.test({
 
     // TODO: Check amount after increase
 
-    // sender1, sender2, and sender3 call `stack-increase` to increase their locked STX
-    block = chain.mineBlock([
-      Tx.contractCall(
-        "pox-3",
-        "stack-increase",
-        [types.uint(increaseBy1)],
-        sender1.address
-      ),
-      Tx.contractCall(
-        "pox-3",
-        "stack-increase",
-        [types.uint(increaseBy2)],
-        sender2.address
-      ),
-      Tx.contractCall(
-        "pox-3",
-        "stack-increase",
-        [types.uint(increaseBy3)],
-        sender3.address
-      ),
-    ]);
-    assertEquals(block.receipts.length, 3);
-    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
-    block.receipts[1].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
-    block.receipts[2].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
 
     // Simulate mining until the reward cycle is completed
     for (let i = 0; i < lockPeriod * 10; i++) {

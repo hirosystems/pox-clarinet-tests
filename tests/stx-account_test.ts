@@ -178,6 +178,7 @@ Clarinet.test({
 
     stxAccount.unlocked.expectUint(initialBalance);
     stxAccount.locked.expectUint(0);
+    stxAccount['unlock-height'].expectUint(0);
 
     // Confirm replacement shows correct amount
     let stxAccountFromPoxData = pox3.stxAccountFromPoxData(sender.address)
@@ -186,5 +187,6 @@ Clarinet.test({
 
     stxAccountFromPoxData.unlocked.expectUint(initialBalance - amountStacked);
     stxAccountFromPoxData.locked.expectUint(amountStacked);
+    stxAccountFromPoxData['unlock-height'].expectUint(1 + lockPeriod);
   },
 });
