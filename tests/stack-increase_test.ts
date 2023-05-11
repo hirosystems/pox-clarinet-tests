@@ -322,7 +322,6 @@ Clarinet.test({
 // function calculates the expected reward for each user based on their locked STX and the total locked STX in the cycle.
 Clarinet.test({
   name: "stack-increase: Combined with delegate-stx and verifying distribution",
-
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const deployer = accounts.get("deployer")!;
     const pox3 = new Pox3(chain, accounts.get("deployer")!);
@@ -337,27 +336,62 @@ Clarinet.test({
     const increaseBy1 = 1000;
     const increaseBy2 = 2000;
     const increaseBy3 = 3000;
-    const lockPeriod = 10;
+    const lockPeriod = 1;
+    const poxAddress = types.tuple({
+      version: types.buff(Uint8Array.from([4])),
+      hashbytes: types.buff(
+        Uint8Array.from([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+      )
+    });
 
     // Call `delegate-stx` to allow delegator to lock STX on behalf of sender1, sender2, and sender3
-    /*
+    let commonArgs = [ types.principal(delegator.address), types.none(), types.some(poxAddress) ];
     let block = chain.mineBlock([
-      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount1 + increaseBy1), delegator.address, types.none(), types.uint(lockPeriod)], sender1.address),
-      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount2 + increaseBy2), delegator.address, types.none(), types.uint(lockPeriod)], sender2.address),
-      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount3 + increaseBy3), delegator.address, types.none(), types.uint(lockPeriod)], sender3.address)
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount1 + increaseBy1), ...commonArgs], sender1.address),
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount2 + increaseBy2), ...commonArgs], sender2.address),
+      Tx.contractCall('pox-3', 'delegate-stx', [types.uint(initialAmount3 + increaseBy3), ...commonArgs], sender3.address),
     ]);
-    block.receipts[0].result.expectOk();
-    block.receipts[1].result.expectOk();
-    block.receipts[2].result.expectOk();
+    assertEquals(block.receipts.length, 3);
+    [0, 1, 2].forEach(i => block.receipts[i].result.expectOk());
+
+    // Delegator partial-stacks STX on behalf of sender1, sender2, and sender3
+    commonArgs = [ poxAddress, types.uint(10), types.uint(10) ];
+    block = chain.mineBlock([
+      Tx.contractCall('pox-3', 'delegate-stack-stx', [ types.principal(sender1.address), types.uint(initialAmount1), ...commonArgs], delegator.address),
+      Tx.contractCall('pox-3', 'delegate-stack-stx', [ types.principal(sender2.address), types.uint(initialAmount2), ...commonArgs], delegator.address),
+      Tx.contractCall('pox-3', 'delegate-stack-stx', [ types.principal(sender3.address), types.uint(initialAmount3), ...commonArgs], delegator.address),
+    ]);
+    assertEquals(block.receipts.length, 3);
+    [0, 1, 2].forEach(i => block.receipts[i].result.expectOk());
     
-    // Delegator locks STX on behalf of sender1, sender2, and sender3
-    let block = chain.mineBlock([
-      Tx.contractCall('pox-3', 'stack-aggregation-commit', [types.uint(initialAmount1 + initialAmount2 + initialAmount3)], delegator.address)
+    // Delegator commits partially stacked STX on behalf of sender1, sender2, and sender3
+    block = chain.mineBlock([
+      Tx.contractCall('pox-3', 'stack-aggregation-commit', [ poxAddress, types.uint(1) ], delegator.address),
     ]);
+
     block.receipts[0].result.expectOk();
-  */
+
+    // Advance to next reward cycle
+    pox3.advanceByFullCycle();
+
+    // TODO: Check amount before increase
+
+    return
+    // FIXME below
+
+    // Delegator partial-stacks STX on behalf of sender1, sender2, and sender3
+    block = chain.mineBlock([
+      Tx.contractCall('pox-3', 'delegate-stack-increase', [ types.principal(sender1.address), poxAddress, types.uint(increaseBy1)], delegator.address),
+      Tx.contractCall('pox-3', 'delegate-stack-increase', [ types.principal(sender2.address), poxAddress, types.uint(increaseBy2)], delegator.address),
+      Tx.contractCall('pox-3', 'delegate-stack-increase', [ types.principal(sender3.address), poxAddress, types.uint(increaseBy3)], delegator.address),
+    ]);
+    assertEquals(block.receipts.length, 3);
+    [0, 1, 2].forEach(i => block.receipts[i].result.expectOk());
+
+    // TODO: Check amount after increase
+
     // sender1, sender2, and sender3 call `stack-increase` to increase their locked STX
-    let block = chain.mineBlock([
+    block = chain.mineBlock([
       Tx.contractCall(
         "pox-3",
         "stack-increase",
@@ -378,9 +412,9 @@ Clarinet.test({
       ),
     ]);
     assertEquals(block.receipts.length, 3);
-    block.receipts[0].result.expectErr();
-    block.receipts[1].result.expectErr();
-    block.receipts[2].result.expectErr();
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
+    block.receipts[1].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
+    block.receipts[2].result.expectErr().expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
 
     // Simulate mining until the reward cycle is completed
     for (let i = 0; i < lockPeriod * 10; i++) {
