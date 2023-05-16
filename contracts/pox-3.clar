@@ -81,8 +81,9 @@
                     let (
                         (first-reward-cycle (get first-reward-cycle stacker))
                         (lock-period (get lock-period stacker))
+                        (unlock-cycle (+ first-reward-cycle lock-period))
                     )
-                    (+ first-reward-cycle lock-period)
+                    (reward-cycle-to-burn-height unlock-cycle)
                 )
                 u0
             )

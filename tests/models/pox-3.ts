@@ -94,7 +94,7 @@ import {
     // Advance by # of blocks in full (prepare + reward) cycle
     advanceByFullCycle() {
       return this.chain.mineEmptyBlockUntil(
-        this.chain.blockHeight + Pox3.PREPARE_CYCLE_LENGTH + Pox3.REWARD_CYCLE_LENGTH
+        this.chain.blockHeight + Pox3.REWARD_CYCLE_LENGTH
       );
     }
   }  

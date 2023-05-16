@@ -144,6 +144,9 @@ Clarinet.test({
     const amountStacked = 50000;
     const startBurnHeight = 10;
     const lockPeriod = 10;
+    const initialRewardCycle = pox3.currentPoxRewardCycle()
+      .result
+      .expectUint(0);
 
     let block = chain.mineBlock([
       Tx.contractCall(
@@ -187,6 +190,6 @@ Clarinet.test({
 
     stxAccountFromPoxData.unlocked.expectUint(initialBalance - amountStacked);
     stxAccountFromPoxData.locked.expectUint(amountStacked);
-    stxAccountFromPoxData['unlock-height'].expectUint(1 + lockPeriod);
+    stxAccountFromPoxData['unlock-height'].expectUint(Pox3.REWARD_CYCLE_LENGTH * (1 + lockPeriod));
   },
 });
