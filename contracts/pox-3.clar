@@ -34,10 +34,8 @@
             (stacker (unwrap! (get stacker cycle-index) u0))
         )
 
-        (if (is-eq stacker addr)
-            (get total-ustx cycle-index)
-            u0
-        )
+        (asserts! (is-eq stacker addr) u0)
+        (get total-ustx cycle-index)
     )
 )
 
@@ -63,12 +61,13 @@
         )
 
         ;; Assert that we can reach all indices
-        ;;(asserts! (<= (get-reward-set-size cycle) u9) (err u1))
+        ;;(asserts! (<= (get-reward-set-size cycle) u9) (unwrap-panic (err u1)))
         (fold + stx-amounts u0)
     )
 )
 
 ;; Use this instead of `stx-account` when running in Clarinet
+;; FIXME: This does not work right with delegation. Can it be fixed?
 (define-read-only (stx-account-from-pox-data (addr principal)) (
     let (
         (account (stx-account addr))
