@@ -97,6 +97,12 @@
 ))
 ;; END replacement for broken built-ins
 
+;; BEGIN public interfaces for private functions
+(define-public (public-handle-unlock (user principal) (amount-locked uint) (cycle-to-unlock uint))
+    (handle-unlock user amount-locked cycle-to-unlock)
+)
+;; END public interfaces for private functions
+
 ;; The .pox-3 contract
 ;; Error codes
 (define-constant ERR_STACKING_UNREACHABLE 255)
