@@ -13,23 +13,9 @@ Clarinet.test({
     const deployer = accounts.get("deployer")!;
     const contractCaller = accounts.get("wallet_1")!;
     const user = accounts.get("wallet_2")!;
-    const intermediary = contracts.get("intermediary")!;
-    const pox2 = contracts.get("pox-3")!;
+    const intermediary = contracts.get(`${deployer.address}.intermediary`)!;
+    const pox = contracts.get(`${deployer.address}.pox-3`)!;
     
-    /*
-    // Deploy the intermediary contract
-    const intermediary = `
-      (define-public (call-check-caller-allowed (pox-3 principal))
-        (contract-call? pox-3 check-caller-allowed)
-      )
-    `;
-    chain.deployContract(
-      "intermediary",
-      intermediary,
-      deployer.address
-    );
-    */
-
     // Test 1: Check that the contract caller is allowed when tx-sender == contract-caller
     chain.callReadOnlyFn('pox-3', 'check-caller-allowed', [], deployer.address)
       .result
@@ -40,18 +26,27 @@ Clarinet.test({
       .result
       .expectErr();
 
-   /*
-    // Test 2: Allow contract caller and check allowance
+    // Test 2: Allow intermediary to act for deployer
     const allowBlock = chain.mineBlock([
       Tx.contractCall(
-        "pox-3",
-        "allow-contract-caller",
-        [types.principal(contractCaller.address), types.some(types.uint(200))],
+        'pox-3',
+        'allow-contract-caller',
+        [
+          types.principal(intermediary.contract_id),
+          types.some(types.uint(5))
+        ],
         deployer.address
       ),
     ]);
     allowBlock.receipts[0].result.expectOk();
 
+    // Test 2: Check that the contract is now allowed to act for deployer
+    chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
+      .result
+      .expectOk();
+
+    return
+  
     // Check the allowance
     const allowance = chain.callReadOnlyFn(
       "pox-3",
@@ -62,10 +57,10 @@ Clarinet.test({
     allowance.result.expectSome().expectTuple().untilBurnHt.expectUint(200);
 
     // Test 3: Check that the contract caller is now allowed
-    allowed = chain.callReadOnlyFn(
+    let allowed = chain.callReadOnlyFn(
       "pox-3",
       "call-check-caller-allowed",
-      [types.principal(pox2.address)],
+      [types.principal(pox.address)],
       contractCaller.address
     );
     assertEquals(allowed.result.expectBool(), true);
@@ -75,7 +70,7 @@ Clarinet.test({
     allowed = chain.callReadOnlyFn(
       "intermediary",
       "call-check-caller-allowed",
-      [types.principal(pox2.address)],
+      [types.principal(pox.address)],
       contractCaller.address
     );
     assertEquals(allowed.result.expectBool(), false);
@@ -104,7 +99,7 @@ Clarinet.test({
     allowed = chain.callReadOnlyFn(
       "intermediary",
       "call-check-caller-allowed",
-      [types.principal(pox2.address)],
+      [types.principal(pox.address)],
       contractCaller.address
     );
     assertEquals(allowed.result.expectBool(), false);
@@ -133,11 +128,9 @@ Clarinet.test({
     allowed = chain.callReadOnlyFn(
       "intermediary",
       "call-check-caller-allowed",
-      [types.principal(pox2.address)],
+      [types.principal(pox.address)],
       contractCaller.address
     );
     assertEquals(allowed.result.expectBool(), true);
-
-  */
   },
 });
