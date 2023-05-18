@@ -7,6 +7,7 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
+
 Clarinet.test({
   name: "allow-contract-caller: Test allowing an intermediary contract caller for a fixed # of blocks",
   async fn(chain: Chain, accounts: Map<string, Account>, contracts: Map<string, Contract>) {
@@ -17,18 +18,18 @@ Clarinet.test({
     const pox = contracts.get(`${deployer.address}.pox-3`)!;
     const allowanceExpiration = 100;
     
-    // Test 1: Check that the contract caller is allowed when tx-sender == contract-caller
+    // Check that the contract caller is allowed when tx-sender == contract-caller
     chain.callReadOnlyFn('pox-3', 'check-caller-allowed', [], deployer.address)
       .result
       .expectBool(true);
 
-    // Test 2: Check that the contract caller is not allowed when tx-sender != contract-caller
+    // Check that the contract caller is not allowed when tx-sender != contract-caller
     chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
       .result
       .expectErr();
 
-    // Test 2: Allow intermediary to act for deployer
-    const allowBlock = chain.mineBlock([
+    // Allow intermediary to act for deployer
+    const block = chain.mineBlock([
       Tx.contractCall(
         'pox-3',
         'allow-contract-caller',
@@ -39,9 +40,9 @@ Clarinet.test({
         deployer.address
       ),
     ]);
-    allowBlock.receipts[0].result.expectOk();
+    block.receipts[0].result.expectOk();
 
-    // Test 2: Check that the contract is now allowed to act for deployer
+    // Check that the contract is now allowed to act for deployer
     chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
       .result
       .expectOk();
@@ -61,6 +62,59 @@ Clarinet.test({
     chain.mineEmptyBlock(allowanceExpiration + 1);
 
     // Check that allowance has expired
+    chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
+      .result
+      .expectErr();
+  },
+});
+
+Clarinet.test({
+  name: "disallow-contract-caller: Test manual rejection of intermediary contract caller",
+  async fn(chain: Chain, accounts: Map<string, Account>, contracts: Map<string, Contract>) {
+    const deployer = accounts.get("deployer")!;
+    const contractCaller = accounts.get("wallet_1")!;
+    const user = accounts.get("wallet_2")!;
+    const intermediary = contracts.get(`${deployer.address}.intermediary`)!;
+    const pox = contracts.get(`${deployer.address}.pox-3`)!;
+    
+    // Check that the contract caller is not allowed when tx-sender != contract-caller
+    chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
+      .result
+      .expectErr();
+
+    // Allow intermediary to act for deployer
+    let block = chain.mineBlock([
+      Tx.contractCall(
+        'pox-3',
+        'allow-contract-caller',
+        [
+          types.principal(intermediary.contract_id),
+          types.none(),
+        ],
+        deployer.address
+      ),
+    ]);
+    block.receipts[0].result.expectOk();
+
+    // Check that the contract is now allowed to act for deployer
+    chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
+      .result
+      .expectOk();
+  
+    // Allow intermediary to act for deployer
+    block = chain.mineBlock([
+      Tx.contractCall(
+        'pox-3',
+        'disallow-contract-caller',
+        [
+          types.principal(intermediary.contract_id),
+        ],
+        deployer.address
+      ),
+    ]);
+    block.receipts[0].result.expectOk();
+
+    // Check that allowance has been cancelled
     chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
       .result
       .expectErr();
