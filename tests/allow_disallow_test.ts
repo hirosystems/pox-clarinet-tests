@@ -7,6 +7,7 @@ import {
   Tx,
   types,
 } from "https://deno.land/x/clarinet@v1.5.4/index.ts";
+import { Pox3 } from "./models/pox-3.ts";
 
 Clarinet.test({
   name: "allow-contract-caller: Test allowing an intermediary contract caller for a fixed # of blocks",
@@ -30,17 +31,29 @@ Clarinet.test({
 
     // Allow intermediary to act for deployer
     const block = chain.mineBlock([
+      // Check that intermediary can't allow itself
+      Tx.contractCall(
+        'intermediary',
+        'allow-contract-caller',
+        [
+          types.principal(intermediary.contract_id),
+          types.some(types.uint(allowanceExpiration)),
+        ],
+        deployer.address
+      ),
       Tx.contractCall(
         'pox-3',
         'allow-contract-caller',
         [
           types.principal(intermediary.contract_id),
-          types.some(types.uint(allowanceExpiration))
+          types.some(types.uint(allowanceExpiration)),
         ],
         deployer.address
       ),
     ]);
-    block.receipts[0].result.expectOk();
+    assertEquals(block.receipts.length, 2);
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_PERMISSION_DENIED);
+    block.receipts[1].result.expectOk();
 
     // Check that the contract is now allowed to act for deployer
     chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
@@ -103,6 +116,15 @@ Clarinet.test({
   
     // Allow intermediary to act for deployer
     block = chain.mineBlock([
+      // Check that intermediary cant disallow itself
+      Tx.contractCall(
+        'intermediary',
+        'disallow-contract-caller',
+        [
+          types.principal(intermediary.contract_id),
+        ],
+        deployer.address
+      ),
       Tx.contractCall(
         'pox-3',
         'disallow-contract-caller',
@@ -112,7 +134,9 @@ Clarinet.test({
         deployer.address
       ),
     ]);
-    block.receipts[0].result.expectOk();
+    assertEquals(block.receipts.length, 2);
+    block.receipts[0].result.expectErr().expectInt(Pox3.ERR_STACKING_PERMISSION_DENIED);
+    block.receipts[1].result.expectOk();
 
     // Check that allowance has been cancelled
     chain.callReadOnlyFn('intermediary', 'check-caller-allowed-proxy', [], deployer.address)
