@@ -63,6 +63,11 @@ Clarinet.test({
             deployer.address
         ).result.expectBool(true);
 
+        // Check that no rejection votes yet
+        block = chain.callReadOnlyFn('pox-3', 'get-total-pox-rejection', [ types.uint(1) ], deployer.address)
+            .result
+            .expectUint(0);
+
         // Wallet 1 rejects PoX rewards
         block = chain.mineBlock([
             Tx.contractCall(
@@ -108,6 +113,11 @@ Clarinet.test({
             ],
             deployer.address
         ).result.expectBool(false);
+
+        // Check the rejection votes matches the expected number
+        block = chain.callReadOnlyFn('pox-3', 'get-total-pox-rejection', [ types.uint(1) ], deployer.address)
+            .result
+            .expectUint(wallet_1.balance + wallet_2.balance);
   },
 });
 
