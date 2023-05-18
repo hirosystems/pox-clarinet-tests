@@ -24,8 +24,8 @@ Clarinet.test({
 
         let block = chain.mineBlock([
             Tx.contractCall(
-                "pox-3",
-                "set-burnchain-parameters",
+                'pox-3',
+                'set-burnchain-parameters',
                 [
                     types.uint(firstBurnHeight),
                     types.uint(prepareCycleLength),
@@ -41,12 +41,7 @@ Clarinet.test({
         block.receipts[0].result.expectOk().expectBool(true);
 
         // Get PoX info, confirm rejection fraction changed
-        let poxInfo = chain.callReadOnlyFn(
-                "pox-3",
-                "get-pox-info",
-                [],
-                deployer.address
-            )
+        let poxInfo = chain.callReadOnlyFn('pox-3', 'get-pox-info', [], deployer.address)
             .result
             .expectOk()
             .expectTuple();
@@ -54,14 +49,9 @@ Clarinet.test({
         poxInfo['rejection-fraction'].expectUint(rejectionFraction);
 
         // PoX should be active next cycle
-        block = chain.callReadOnlyFn(
-            "pox-3",
-            "is-pox-active",
-            [
-                types.uint(1),
-            ],
-            deployer.address
-        ).result.expectBool(true);
+        block = chain.callReadOnlyFn('pox-3', 'is-pox-active', [ types.uint(1) ], deployer.address)
+            .result
+            .expectBool(true);
 
         // Check that no rejection votes yet
         block = chain.callReadOnlyFn('pox-3', 'get-total-pox-rejection', [ types.uint(1) ], deployer.address)
@@ -82,37 +72,22 @@ Clarinet.test({
         block.receipts[0].result.expectOk().expectBool(true);
 
         // PoX should still be active next cycle
-        block = chain.callReadOnlyFn(
-            "pox-3",
-            "is-pox-active",
-            [
-                types.uint(1),
-            ],
-            deployer.address
-        ).result.expectBool(true);
+        block = chain.callReadOnlyFn('pox-3', 'is-pox-active', [ types.uint(1) ], deployer.address)
+            .result
+            .expectBool(true);
 
         // Wallet 2 rejects PoX rewards
         block = chain.mineBlock([
-            Tx.contractCall(
-                "pox-3",
-                "reject-pox",
-                [],
-                wallet_2.address
-            ),
+            Tx.contractCall('pox-3', 'reject-pox', [], wallet_2.address),
         ]);
 
         assertEquals(block.receipts.length, 1);
         block.receipts[0].result.expectOk().expectBool(true);
 
         // PoX should not be active next cycle
-        block = chain.callReadOnlyFn(
-            "pox-3",
-            "is-pox-active",
-            [
-                types.uint(1),
-            ],
-            deployer.address
-        ).result.expectBool(false);
+        block = chain.callReadOnlyFn('pox-3', 'is-pox-active', [ types.uint(1) ], deployer.address)
+            .result
+            .expectBool(false);
 
         // Check the rejection votes matches the expected number
         block = chain.callReadOnlyFn('pox-3', 'get-total-pox-rejection', [ types.uint(1) ], deployer.address)
