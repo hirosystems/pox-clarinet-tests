@@ -97,6 +97,21 @@ import {
         this.chain.blockHeight + Pox3.REWARD_CYCLE_LENGTH
       );
     }
+
+    // Advance by # of blocks in full (prepare + reward) cycle
+    /*
+    advanceToRewardCycle(cycle: number) {
+      let blockHeight = this.chain.callReadOnlyFn(
+        "pox-3",
+        "reward-cycle-to-burn-height",
+        [
+          types.uint(cycle)
+        ],
+        this.deployer.address
+      ).result.expectUint();
+      return this.chain.mineEmptyBlockUntil(blockHeight);
+    }
+    */
   }  
 
   export { Pox3 };
