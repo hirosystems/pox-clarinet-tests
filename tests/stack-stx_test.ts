@@ -244,3 +244,34 @@ Clarinet.test({
       .expectInt(Pox3.ERR_STACKING_ALREADY_DELEGATED);
   },
 });
+
+Clarinet.test({
+  name: "stack-stx: THIS TEST SHOULD FAIL!",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const pox3 = new Pox3(chain, accounts.get("deployer")!);
+    const deployer = accounts.get("deployer")!;
+    const sender1 = accounts.get("wallet_1")!;
+
+    // Valid PoX addresses
+    const poxAddress1 = types.tuple({
+      version: types.buff(Uint8Array.from([4])),
+      hashbytes: types.buff(Uint8Array.from([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
+    });
+
+    // Call `stack-stx` to lock some STX
+    let block = chain.mineBlock([
+      Tx.contractCall('pox-3', 'stack-stx', [ types.uint(30000), poxAddress1, types.uint(10), types.uint(10) ], sender1.address),
+      Tx.contractCall('pox-3', 'stack-stx', [ types.uint(40000), poxAddress1, types.uint(10), types.uint(10) ], sender1.address),
+    ]);
+    assertEquals(block.receipts.length, 2);
+    // FIXME: Second call to `stack-stx` does not change stacking amount, should return error
+    [0, 1].forEach(i => block.receipts[0].result.expectOk());
+
+    pox3.advanceByFullCycle();
+    pox3.stxLockedFromPoxData(sender1.address).result.expectUint(30000);
+
+    chain.callReadOnlyFn('pox-3', 'get-num-reward-set-pox-addresses', [ types.uint(1) ], deployer.address)
+      .result
+      .expectUint(1);
+  },
+});
